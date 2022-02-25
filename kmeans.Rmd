@@ -10,11 +10,122 @@ knitr::opts_chunk$set(
 
 *The output of most of the R chunks isn't included in the HTML version of the file to keep it to a more reasonable file size.  You can run the code in R to see the output.*
 
-This is an [R Markdown](https://rmarkdown.rstudio.com/) document.  Follow the link to learn more about R Markdown and the notebook format used during the workshop.
+This is an [R Markdown](https://rmarkdown.rstudio.com/) document. Follow the link to learn more about R Markdown and the notebook format used during the workshop.
 
 # Setup
 
 ```{r, eval=TRUE}
 library(dplyr)
 library(readr)
+library(tidyverse)
+library(factoextra)
+library(vip)
+library(reshape2)
+library(rattle) #dataset
 ```
+
+# Data
+
+For the purposes of this workshop, we have no missing data. Follow this link to learn more about the [data](https://cran.r-project.org/web/packages/cluster.datasets/cluster.datasets.pdf).
+
+What's in the data set:
+
+```{r, eval=TRUE}
+data("new.haven.school.scores")
+new.haven.school.scores
+```
+
+The size of the dataset (n=`r nrow(new.haven.school.scores)`) for clustering depends on the availability of complete cases. We include all four numeric vectors of student scores in either reading or arithmetic. We create a data frame containing only these columns of interest. 
+
+```{r}
+scores <- scale(wine[-1])
+```
+
+# kmeans
+
+```{r}
+k2 <- kmeans(scores, centers = 2, nstart = 25)
+str(k2)
+
+
+k2 <- kmeans(scores, centers = 2, nstart = 25)
+k3 <- kmeans(scores, centers = 3, nstart = 25)
+k4 <- kmeans(scores, centers = 4, nstart = 25)
+k5 <- kmeans(scores, centers = 5, nstart = 25)
+k6 <- kmeans(scores, centers = 6, nstart = 25)
+
+
+# plots to compare
+p1 <- fviz_cluster(k2, geom = "point", data = scores) + ggtitle("k = 2")
+p2 <- fviz_cluster(k3, geom = "point",  data = scores) + ggtitle("k = 3")
+p3 <- fviz_cluster(k4, geom = "point",  data = scores) + ggtitle("k = 4")
+p4 <- fviz_cluster(k5, geom = "point",  data = scores) + ggtitle("k = 5")
+p5 <- fviz_cluster(k6, geom = "point",  data = scores) + ggtitle("k = 6")
+
+
+grid.arrange(p1, p2, p3, p4, nrow = 2)
+```
+
+# Number of Clusters
+```{r, dpi=600}
+set.seed(404)
+# function to compute total within-cluster sum of square 
+wss <- function(k) {
+  kmeans(scores, k, nstart = 10 )$tot.withinss
+}
+
+# Compute and plot wss for k = 1 to k = 15
+k.values <- 1:15
+
+# extract wss for 2-15 clusters
+wss_values <- map_dbl(k.values, wss)
+
+plot(k.values, wss_values,
+     type="b", pch = 19, frame = FALSE, 
+     xlab="Number of clusters K",
+     ylab="Total within-clusters sum of squares")
+
+set.seed(404)
+fviz_nbclust(scores, kmeans, method = "wss")
+fviz_nbclust(scores, kmeans, method = "silhouette")
+fviz_nbclust(scores, kmeans, method = "silhouette")$data #silhouette widths 
+```
+
+# Optimal Cluster Solution
+```{r}
+set.seed(1000)  # assures that you get same starting values
+final <- kmeans(scores, 3, nstart = 25)
+print(final)
+
+c <- fviz_cluster(final, data = scores)
+c
+
+scores <- as.data.frame(scores)
+#cluster centers 
+scores %>%
+  mutate(Cluster = final$cluster) %>%
+  group_by(Cluster) %>%
+  summarise_all("mean")
+```
+
+
+# Data Visulation: Boxplots 
+
+```{r, fig.width=6, fig.height=6}
+scores$cluster <- final$cluster
+plotdf.m = melt(scores[,c(1:14)], id.var="cluster")  # transform data for plot
+plotdf.m = plotdf.m[order(plotdf.m$variable, plotdf.m$cluster),]
+```
+
+```{r, fig.width=6, fig.height=6, dpi=600}
+ggplot(data=plotdf.m, aes(x=as.factor(cluster), y=value)) + 
+  geom_boxplot(aes(fill=as.factor(variable))) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
+  #scale_fill_discrete(name=NULL, labels=c("Mobility","Depression", "Social Roles and Activities", "Cognitive Function")) +
+  theme(legend.position="top") +
+  labs(y="Scores", x="Cluster") + 
+  labs(fill=NULL) 
+```
+
+
