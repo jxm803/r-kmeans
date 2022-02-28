@@ -21,29 +21,69 @@ library(tidyverse)
 library(factoextra)
 library(vip)
 library(reshape2)
-library(rattle) #dataset
+library(rattle) #wine data
 ```
 
 # Data
 
-For the purposes of this workshop, we have no missing data. We will be using two data sets throughout this workshop 
+We will be using two data sets throughout this workshop 
 
-  + [data]() to demonstrate concepts 
+  + [Cereal data](https://www.kaggle.com/crawford/80-cereals) to demonstrate concepts 
   + [Wine data](https://cran.r-project.org/web/packages/rattle.data/rattle.data.pdf) to practice concepts 
 
+```{r}
+# cereal data
+cereal <- read_csv("Cereals.csv")
+```
+
+What's in the data: 
 
 ```{r}
-scores <- scale(wine[-1])
+cereal
+wine
+```
+
+## Variables 
+
+k-means clustering requires complete cases
+
+```{r}
+#find cases with missing values 
+cereal[!complete.cases(cereal),]
+```
+
+### Exercise
+
+Does the wine data contain missing values? 
+
+```{r}
+```
+
+## Standardize 
+
+We are working with incommensurate units. This requires us to first standardize variables. Variables are often scaled to have mean 0 and variance 1. 
+
+```{r}
+scores <- cereal %>% select(4:6,8) %>% scale() 
+str(cereal)
+scores <- as.data.frame(scores)
+```
+
+### Exercise 
+
+Make sure the wine data is in the data frame format. Select only the columns for alcohol, malic, ash, alcalinity, magnesium, and phenols. 
+
+```{r}
 ```
 
 # kmeans
+
+Now that we've finished data pre-processing, we can find various cluster solutions. First we select a ballpark number of clusters (e.g. 2-6). 
 
 ```{r}
 k2 <- kmeans(scores, centers = 2, nstart = 25)
 str(k2)
 
-
-k2 <- kmeans(scores, centers = 2, nstart = 25)
 k3 <- kmeans(scores, centers = 3, nstart = 25)
 k4 <- kmeans(scores, centers = 4, nstart = 25)
 k5 <- kmeans(scores, centers = 5, nstart = 25)
@@ -62,6 +102,9 @@ grid.arrange(p1, p2, p3, p4, nrow = 2)
 ```
 
 # Number of Clusters
+
+We can use silhouette statistic and plots to help us pick the cluster solution with the largest overall width. To learn more about [silhouettes](https://www.sciencedirect.com/science/article/pii/0377042787901257?via%3Dihub). Essentially, this measure quantifies how much better the assigned cluster is to the next best one. The value ranges from 0 to 1. 
+
 ```{r, dpi=600}
 set.seed(404)
 # function to compute total within-cluster sum of square 
@@ -88,14 +131,13 @@ fviz_nbclust(scores, kmeans, method = "silhouette")$data #silhouette widths
 
 # Optimal Cluster Solution
 ```{r}
-set.seed(1000)  # assures that you get same starting values
+set.seed(505)  # assures that you get same starting values
 final <- kmeans(scores, 3, nstart = 25)
 print(final)
 
 c <- fviz_cluster(final, data = scores)
 c
 
-scores <- as.data.frame(scores)
 #cluster centers 
 scores %>%
   mutate(Cluster = final$cluster) %>%
@@ -108,7 +150,7 @@ scores %>%
 
 ```{r, fig.width=6, fig.height=6}
 scores$cluster <- final$cluster
-plotdf.m = melt(scores[,c(1:14)], id.var="cluster")  # transform data for plot
+plotdf.m = melt(scores[,c(1:5)], id.var="cluster")  # transform data for plot
 plotdf.m = plotdf.m[order(plotdf.m$variable, plotdf.m$cluster),]
 ```
 
@@ -117,7 +159,6 @@ ggplot(data=plotdf.m, aes(x=as.factor(cluster), y=value)) +
   geom_boxplot(aes(fill=as.factor(variable))) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) +
-  #scale_fill_discrete(name=NULL, labels=c("Mobility","Depression", "Social Roles and Activities", "Cognitive Function")) +
   theme(legend.position="top") +
   labs(y="Scores", x="Cluster") + 
   labs(fill=NULL) 
