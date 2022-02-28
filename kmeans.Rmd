@@ -71,7 +71,7 @@ scores <- as.data.frame(scores)
 
 ### Exercise 
 
-Make sure the wine data is in the data frame format. Select only the columns for alcohol, malic, ash, alcalinity, magnesium, and phenols. 
+Make sure the wine data is in the data frame format. Select only the columns for alcohol, malic, ash, alcalinity, magnesium, and phenols. Determine if scaling is appropriate.  
 
 ```{r}
 ```
@@ -103,7 +103,7 @@ grid.arrange(p1, p2, p3, p4, nrow = 2)
 
 # Number of Clusters
 
-We can use silhouette statistic and plots to help us pick the cluster solution with the largest overall width. To learn more about [silhouettes](https://www.sciencedirect.com/science/article/pii/0377042787901257?via%3Dihub). Essentially, this measure quantifies how much better the assigned cluster is to the next best one. The value ranges from 0 to 1. 
+We can use the silhouette statistic and plots to help us pick the cluster solution with the largest overall width. To learn more about [silhouettes](https://www.sciencedirect.com/science/article/pii/0377042787901257?via%3Dihub). Essentially, this measure quantifies how much better the assigned cluster is to the next best one. The value ranges from 0 to 1. 
 
 ```{r, dpi=600}
 set.seed(404)
