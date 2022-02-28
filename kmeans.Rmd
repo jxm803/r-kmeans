@@ -26,16 +26,11 @@ library(rattle) #dataset
 
 # Data
 
-For the purposes of this workshop, we have no missing data. Follow this link to learn more about the [data](https://cran.r-project.org/web/packages/cluster.datasets/cluster.datasets.pdf).
+For the purposes of this workshop, we have no missing data. We will be using two data sets throughout this workshop 
 
-What's in the data set:
+  + [data]() to demonstrate concepts 
+  + [Wine data](https://cran.r-project.org/web/packages/rattle.data/rattle.data.pdf) to practice concepts 
 
-```{r, eval=TRUE}
-data("new.haven.school.scores")
-new.haven.school.scores
-```
-
-The size of the dataset (n=`r nrow(new.haven.school.scores)`) for clustering depends on the availability of complete cases. We include all four numeric vectors of student scores in either reading or arithmetic. We create a data frame containing only these columns of interest. 
 
 ```{r}
 scores <- scale(wine[-1])
@@ -109,7 +104,7 @@ scores %>%
 ```
 
 
-# Data Visulation: Boxplots 
+# Bonus: Data Visulation with Boxplots 
 
 ```{r, fig.width=6, fig.height=6}
 scores$cluster <- final$cluster
