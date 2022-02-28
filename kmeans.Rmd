@@ -24,6 +24,8 @@ library(reshape2)
 library(rattle) #wine data
 ```
 
+# What is [Clustering](https://realpython.com/k-means-clustering-python/)
+
 # Data
 
 We will be using two data sets throughout this workshop 
@@ -163,5 +165,8 @@ ggplot(data=plotdf.m, aes(x=as.factor(cluster), y=value)) +
   labs(y="Scores", x="Cluster") + 
   labs(fill=NULL) 
 ```
+# Learning More 
 
+  + Check out our [blog](https://sites.northwestern.edu/researchcomputing/posts/) for an upcoming post containing online learning resources about clustering. 
+  + If you have a question about clustering your data, request a free consultation with our data science consultants [here](https://app.smartsheet.com/b/form/2f2ec327e6164f83b588b7bbe2e2b56f) 
 
