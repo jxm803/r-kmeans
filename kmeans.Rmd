@@ -82,7 +82,7 @@ Does the wine data contain missing values?
 ```{r}
 ```
 
-## Variable Selection and Standardize 
+## Selection and Standardization 
 
 We are working with incommensurate units. This requires us to first standardize variables. Variables are often scaled to have mean 0 and variance 1. 
 
@@ -218,7 +218,38 @@ cereal %>%
 
 ### Exercise 
 
-Describe clusters in the wine data 
+Select a ballpark number of clusters for the wine data and use the factoextra package to visualize each of the partitioning results. 
+
+```{r}
+
+```
+
+### Exercise 
+
+Use a combination of elbow method heuristics and the silhouette statistic to select the optimal number of clusters. 
+
+```{r}
+
+```
+
+### Exercise 
+
+Refer to the cluster centers of your final cluster solution to describe your clusters. 
+
+```{r}
+
+```
+
+### Exercise
+
+Use boxplots to visualize your clusters. 
+
+```{r}
+
+
+```
+
+
 
 # Learning More 
 
