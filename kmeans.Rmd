@@ -8,13 +8,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-*The output of most of the R chunks isn't included in the HTML version of the file to keep it to a more reasonable file size.  You can run the code in R to see the output.*
 
 This is an [R Markdown](https://rmarkdown.rstudio.com/) document. Follow the link to learn more about R Markdown and the notebook format used during the workshop.
 
 # Setup
 
-```{r, eval=TRUE}
+```{r, eval=TRUE, message=F}
 library(dplyr)
 library(readr)
 library(tidyverse)
@@ -165,6 +164,11 @@ ggplot(data=plotdf.m, aes(x=as.factor(cluster), y=value)) +
   labs(y="Scores", x="Cluster") + 
   labs(fill=NULL) 
 ```
+
+### Exercise 
+
+Describe clusters in the wine data 
+
 # Learning More 
 
   + Check out our [blog](https://sites.northwestern.edu/researchcomputing/posts/) for an upcoming post containing online learning resources about clustering. 
