@@ -174,9 +174,9 @@ c
 
 #cluster centers 
 scores %>%
-  mutate(Cluster = final$cluster) %>%
-  group_by(Cluster) %>%
-  summarise_all("mean")
+  mutate(Cluster = final$cluster) %>% #adds new variable, preserves existing ones
+  group_by(Cluster) %>% #add grouping 
+  summarise_all("mean") #affects every variable 
 ```
 
 
