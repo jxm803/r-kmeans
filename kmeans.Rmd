@@ -16,10 +16,10 @@ This is an [R Markdown](https://rmarkdown.rstudio.com/) document. Follow the lin
 ```{r, eval=TRUE, message=F}
 library(readr) #reads rectangular csv data 
 library(tidyverse) #data manipulation 
-library(factoextra) #visualization
-library(vip) #visualization 
 library(reshape2) #restructure data, melt 
 library(rattle) #wine data
+library(factoextra) #visualization
+library(vip) #visualization 
 ```
 
 # What is [Clustering](https://realpython.com/k-means-clustering-python/)
@@ -37,7 +37,6 @@ The k-means algorithm is one clustering method that separates data into k groups
   + Variable selection 
   + Preprocessing
   + Picking the number of clusters
-  + Bonus: Profiling clusters 
 
 # Data
 
@@ -55,7 +54,7 @@ What's in the data:
 
 ```{r}
 cereal
-wine
+rattle::wine
 ```
 
 ## Variables 
@@ -66,6 +65,7 @@ k-means clustering requires complete cases
 #find cases with missing values 
 cereal[!complete.cases(cereal),]
 ```
+
 For this demonstration we will use:
 
   + calories: calories per serving
@@ -80,6 +80,7 @@ We exclude non-numerical variables and those with missing data
 Does the wine data contain missing values? 
 
 ```{r}
+
 ```
 
 ## Selection and Standardization 
@@ -106,6 +107,7 @@ Make sure the wine data is in the data frame format. Select only the columns for
 Now that we've finished data pre-processing, we can find various cluster solutions. First we select a ballpark number of clusters (e.g. 2-6). 
 
 ```{r}
+set.seed(44)
 k2 <- kmeans(scores, centers = 2, nstart = 25)
 str(k2)
 
@@ -183,7 +185,7 @@ scores %>%
 # Bonus: Data Visulation with Boxplots 
 
 ```{r, fig.width=6, fig.height=6}
-scores$cluster <- final$cluster
+scores$cluster <- final$cluster #paste cluster vector 
 plotdf.m = melt(scores[,c(1:5)], id.var="cluster")  #transform data for plot
 plotdf.m = plotdf.m[order(plotdf.m$variable, plotdf.m$cluster),]
 ```
@@ -201,7 +203,7 @@ ggplot(data=plotdf.m, aes(x=as.factor(cluster), y=value)) +
 # Clustered Cereals 
 
 ```{r}
-cereal$cluster <- scores$cluster 
+cereal$cluster <- scores$cluster #paste cluster vector 
 #cluster 1
 cereal %>% 
   filter(cluster==1) %>% #finds rows/cases where conditions are true
